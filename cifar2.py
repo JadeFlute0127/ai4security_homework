@@ -4,7 +4,7 @@ from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import os
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 batch_size = 64
 
