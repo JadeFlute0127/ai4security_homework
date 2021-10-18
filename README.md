@@ -11,8 +11,9 @@ optimizer = optim.Adam(net.parameters(), lr=0.001)
 # 调参
 ### 优化器
 1. SGD(随机梯度下降)  每次只选择一个样本的数据来进行更新梯度
-2. Adam  泛化极好，比起其他优化器性能也更好，会对梯度、梯度的平方使用指数加权平均。
-
+![sgd](https://user-images.githubusercontent.com/35321989/137672569-957a7ced-e45c-497c-ba3c-0d852b047428.png)
+3. Adam  泛化极好，比起其他优化器性能也更好，会对梯度、梯度的平方使用指数加权平均。
+![Adam](https://user-images.githubusercontent.com/35321989/137672818-8f029178-1b1b-4ceb-aef5-5eba851232db.png)
 ### BatchSize
 batchsize指的是：单次训练所选取的样本数。
 训练样本是从训练集中随机选取的，因此训练样本满足独立同分布。
