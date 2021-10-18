@@ -85,10 +85,9 @@ class ResNet(nn.Module):
         x = torch.flatten(x, 1)
         out = self.fc(x)
         return out
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = ResNet()
-# model.to(device)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
 path = 'cifar10_state.pth'
 if os.path.exists(path):
     model.load_state_dict(torch.load(path))
@@ -101,8 +100,10 @@ def train(model, data_loader, optimizer, epoch):
     model.train()
     for batch_idx, (x, label) in enumerate(data_loader):
         optimizer.zero_grad()
+        x = x.cuda() #cuda
         output = model(x)
-        loss = criterion(output, label)
+        label = label.cuda()#cuda
+        loss = criterion(output, label).cuda()
         loss.backward()
         optimizer.step()
 
@@ -120,7 +121,9 @@ def test(model, test_loader):
     test_loss = 0.
     with torch.no_grad():
         for x, label in test_loader:
+            x = x.cuda() #cuda
             output = model(x)
+            label = label.cuda() #cuda
             test_loss += criterion(output, label)
             pred = output.argmax(dim=1)
             total_correct += pred.eq(label).sum().item()
@@ -128,18 +131,18 @@ def test(model, test_loader):
         total_size = len(test_loader.dataset)
         test_loss /= total_size
         total_correct /= total_size
-        Losses = Losses.append(test_loss)
-        Acces = Acces.append(total_correct)
+        Losses.append(test_loss)
+        Acces.append(total_correct)
         print('test loss: ', test_loss)
         print('acc: ', total_correct * 100)
         return Losses,Acces
 
-epochs = 10
+epochs = 5
 iterations = []
 for epoch in range(epochs):
     train(model, train_loader, optimizer, epoch)
     Losses ,Acces = test(model, test_loader)
-    iterations = iterations.append(epoch)
+    iterations.append(epoch)
 
 
 torch.save(model.state_dict(), path)
