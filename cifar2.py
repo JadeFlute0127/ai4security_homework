@@ -4,6 +4,7 @@ from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import os
+import matplotlib as plt
 
 batch_size = 64
 
@@ -85,13 +86,16 @@ class ResNet(nn.Module):
         out = self.fc(x)
         return out
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = ResNet()
+# model.to(device)
 path = 'cifar10_state.pth'
 if os.path.exists(path):
     model.load_state_dict(torch.load(path))
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=1e-2)
+
 
 def train(model, data_loader, optimizer, epoch):
     model.train()
@@ -103,12 +107,14 @@ def train(model, data_loader, optimizer, epoch):
         optimizer.step()
 
         if batch_idx % 20 == 0:
-            Loss.append(loss)
             print('epoch', epoch)
             print(batch_idx, 'loss:', loss.item())
-    Loss
+
 
 def test(model, test_loader):
+    Losses = []
+    Acces = []
+
     model.eval()
     total_correct = 0.
     test_loss = 0.
@@ -122,14 +128,25 @@ def test(model, test_loader):
         total_size = len(test_loader.dataset)
         test_loss /= total_size
         total_correct /= total_size
+        Losses = Losses.append(test_loss)
+        Acces = Acces.append(total_correct)
         print('test loss: ', test_loss)
         print('acc: ', total_correct * 100)
+        return Losses,Acces
 
-epochs = 2
+epochs = 10
+iterations = []
 for epoch in range(epochs):
     train(model, train_loader, optimizer, epoch)
-    test(model, test_loader)
+    Losses ,Acces = test(model, test_loader)
+    iterations = iterations.append(epoch)
+
 
 torch.save(model.state_dict(), path)
 
-###test
+###plt
+plt.title('Loss And Acc')
+plt.plot(iterations, Losses, color='darkblue',label='loss')
+plt.plot(iterations, Acces, 'b' , label='accuracy')
+plt.legend()
+plt.xlabel('Iteration')
