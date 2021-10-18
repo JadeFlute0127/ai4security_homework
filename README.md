@@ -8,6 +8,26 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 ```
 
+# 数据
+```
+train_data = datasets.CIFAR10(
+    root='cifar10',
+    train=True,
+    download=True,
+    transform=transform
+)
+
+test_data = datasets.CIFAR10(
+    root='cifar10',
+    train=False,
+    download=True,
+    transform=transform
+)
+
+train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
+```
+
 # 调参
 ### 优化器
 1. SGD(随机梯度下降)  每次只选择一个样本的数据来进行更新梯度
