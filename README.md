@@ -1,7 +1,7 @@
 # ai4security_homework ：CIFAR10图像分类
 
 # 模型介绍
-使用Pytorch框架，模型ResNet，使用交叉墒作为Loss函数，优化器选择SGD/Aam。
+使用Pytorch框架，模型ResNet，使用交叉墒作为Loss函数，优化器选择SGD/Adam。
 将Accuracy作为模型评估的标准，在CIFAR10数据集中进行训练。
 ```py
 criterion = nn.CrossEntropyLoss()
